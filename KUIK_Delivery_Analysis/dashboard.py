@@ -4,6 +4,10 @@ import plotly.express as px
 import plotly.graph_objects as go
 from datetime import datetime
 import numpy as np
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR = BASE_DIR / "data"
 
 # Set page configuration
 st.set_page_config(
@@ -45,10 +49,10 @@ st.markdown("""
 @st.cache_data
 def load_data():
     try:
-        orders = pd.read_csv('data/orders.csv')
-        deliveries = pd.read_csv('data/deliveries.csv')
-        hubs = pd.read_csv('data/hubs.csv')
-        riders = pd.read_csv('data/riders.csv')
+        orders = pd.read_csv(DATA_DIR / 'orders.csv')
+        deliveries = pd.read_csv(DATA_DIR / 'deliveries.csv')
+        hubs = pd.read_csv(DATA_DIR / 'hubs.csv')
+        riders = pd.read_csv(DATA_DIR / 'riders.csv')
         
         # Convert datetime columns
         orders['order_date'] = pd.to_datetime(orders['order_date'])
@@ -198,6 +202,7 @@ def main():
     
     with col2:
         st.subheader("SLA Breach Rate by Hour of Day")
+        filtered_deliveries = filtered_deliveries.copy()
         filtered_deliveries['hour'] = filtered_deliveries['pickup_time'].dt.hour
         filtered_deliveries['day_name'] = filtered_deliveries['pickup_time'].dt.day_name()
         

@@ -1,9 +1,9 @@
 ﻿#!/usr/bin/env python3
 
 
+import os
 import subprocess
 import sys
-import os
 
 def check_csv_files():
     required_files = [
@@ -26,22 +26,6 @@ def check_csv_files():
     
     return True
 
-def install_dependencies():
-    try:
-        import streamlit
-        import plotly
-        print("Dependencies already installed")
-        return True
-    except ImportError:
-        print("Installing dependencies...")
-        try:
-            subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
-            print("Dependencies installed successfully!")
-            return True
-        except subprocess.CalledProcessError as e:
-            print(f"Failed to install dependencies: {e}")
-            return False
-
 def launch_dashboard():
     print("Launching Delivery Analysis Dashboard...")
     print("Dashboard will open in your default web browser")
@@ -62,10 +46,6 @@ def main():
     
     # Check if CSV files exist
     if not check_csv_files():
-        sys.exit(1)
-    
-    # Install dependencies
-    if not install_dependencies():
         sys.exit(1)
     
     # Launch dashboard
