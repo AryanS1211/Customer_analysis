@@ -1,14 +1,9 @@
 ﻿import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-import psycopg2
-from datetime import datetime, timedelta
 import numpy as np
-import os
+from pathlib import Path
 
-# Set up plotting style
-plt.style.use('seaborn-v0_8')
-sns.set_palette("husl")
+BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR = BASE_DIR / "data"
 
 def create_sample_data():
     np.random.seed(42)
@@ -91,17 +86,22 @@ def create_sample_data():
     deliveries['status'] = 'completed'
     
     # Save data to CSV files
-    os.makedirs('data', exist_ok=True)
-    
-    orders.to_csv('data/orders.csv', index=False)
-    deliveries.to_csv('data/deliveries.csv', index=False)
-    hubs.to_csv('data/hubs.csv', index=False)
-    riders.to_csv('data/riders.csv', index=False)
-    
-    print(f"Saved {len(orders)} orders to data/orders.csv")
-    print(f"Saved {len(deliveries)} deliveries to data/deliveries.csv")
-    print(f"Saved {len(hubs)} hubs to data/hubs.csv")
-    print(f"Saved {len(riders)} riders to data/riders.csv")
+    DATA_DIR.mkdir(exist_ok=True)
+
+    orders_path = DATA_DIR / "orders.csv"
+    deliveries_path = DATA_DIR / "deliveries.csv"
+    hubs_path = DATA_DIR / "hubs.csv"
+    riders_path = DATA_DIR / "riders.csv"
+
+    orders.to_csv(orders_path, index=False)
+    deliveries.to_csv(deliveries_path, index=False)
+    hubs.to_csv(hubs_path, index=False)
+    riders.to_csv(riders_path, index=False)
+
+    print(f"Saved {len(orders)} orders to {orders_path}")
+    print(f"Saved {len(deliveries)} deliveries to {deliveries_path}")
+    print(f"Saved {len(hubs)} hubs to {hubs_path}")
+    print(f"Saved {len(riders)} riders to {riders_path}")
     
     return orders, deliveries
 
@@ -112,4 +112,4 @@ if __name__ == "__main__":
     # Create sample data and save to CSV
     orders, deliveries = create_sample_data()
     
-    print("\nAnalysis complete! CSV files saved to data/ folder.")
+    print(f"\nAnalysis complete! CSV files saved to {DATA_DIR}.")

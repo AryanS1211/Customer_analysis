@@ -8,6 +8,12 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
+REQUIRED_FILES = [
+    DATA_DIR / "orders.csv",
+    DATA_DIR / "deliveries.csv",
+    DATA_DIR / "hubs.csv",
+    DATA_DIR / "riders.csv",
+]
 
 # Set page configuration
 st.set_page_config(
@@ -49,6 +55,11 @@ st.markdown("""
 @st.cache_data
 def load_data():
     try:
+        missing_files = [path.name for path in REQUIRED_FILES if not path.exists()]
+        if missing_files:
+            from delivery_analysis import create_sample_data
+            create_sample_data()
+
         orders = pd.read_csv(DATA_DIR / 'orders.csv')
         deliveries = pd.read_csv(DATA_DIR / 'deliveries.csv')
         hubs = pd.read_csv(DATA_DIR / 'hubs.csv')
@@ -66,7 +77,7 @@ def load_data():
         
         return orders, deliveries, hubs, riders
     except FileNotFoundError as e:
-        st.error(f"Data files not found. Please run the analysis first to generate CSV files. Error: {e}")
+        st.error(f"Data files could not be created or loaded. Error: {e}")
         return None, None, None, None
 
 def create_metric_card(title, value, format_type="number"):
